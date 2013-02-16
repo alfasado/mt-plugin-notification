@@ -60,7 +60,7 @@ sub _post_save_object {
     my $body = $obj->$body_field;
     my $email = $obj->$mail_field;
     if (! $body || ! $email ) {
-        return;
+        return 1;
     }
     if ( $delimiter eq 'EOF' ) {
         $email =~ s/\r\n?/\n/g;

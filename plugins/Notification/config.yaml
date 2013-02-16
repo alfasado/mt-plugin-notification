@@ -1,7 +1,7 @@
 name: Notification
 id  : Notification
 key:  notification
-version: 0.1
+version: 0.2
 author_link: http://alfasado.net/
 author_name: Alfasado Inc.
 l10n_class: Notification::L10N
@@ -21,9 +21,13 @@ config_settings:
         default: 1
     NotificationEmailDelimiter:
         default: Comma # OR EOF
+    NotificationIsRequired:
+        default: 0
 settings:
     notification_mail_subject:
         Default: Notification : <mt:var name="class_label"> '<mt:var name="object_title">' is published.
     notification_mail_body:
         Default: <mt:var name="body">
 config_template: config.tmpl
+
+# TODO::save_filter
