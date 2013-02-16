@@ -30,7 +30,7 @@ sub _post_save_object {
     if (! $obj->has_column( 'status' ) ) {
         return 1;
     }
-    if ( $obj->has_column( 'status' ) != 2 ) {
+    if ( $obj->status != 2 ) {
         return 1;
     }
     my $objs = $app->config( 'NotificationObjectClasses' );
