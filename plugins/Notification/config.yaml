@@ -20,7 +20,7 @@ config_settings:
     NotificationAtStatusCanged:
         default: 1
     NotificationEmailDelimiter:
-        default: Comma # OR EOF
+        default: Comma # OR EOL
     NotificationIsRequired:
         default: 0
 settings:

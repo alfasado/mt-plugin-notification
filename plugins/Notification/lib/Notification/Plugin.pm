@@ -62,7 +62,7 @@ sub _post_save_object {
     if (! $body || ! $email ) {
         return 1;
     }
-    if ( $delimiter eq 'EOF' ) {
+    if ( $delimiter eq 'EOL' ) {
         $email =~ s/\r\n?/\n/g;
         my @addresses = split( /\n/, $email );
         my @emails;
