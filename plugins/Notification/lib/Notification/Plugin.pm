@@ -110,7 +110,7 @@ sub _post_save_object {
     $param->{ script_uri } = $cgi;
     $param->{ edit_screen } = $cgi . $admin_script . $query_str;
     my $subject = $plugin->get_config_value( 'notification_mail_subject' );
-    my $body = $plugin->get_config_value( 'notification_mail_body' );
+    $body = $plugin->get_config_value( 'notification_mail_body' );
     $subject = "<__trans_section component='Notification'>${subject}</__trans_section>";
     $body = "<__trans_section component='Notification'>${body}</__trans_section>";
     my $tmpl = MT->model( 'template' )->new;
