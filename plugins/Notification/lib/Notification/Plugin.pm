@@ -124,7 +124,8 @@ sub _post_save_object {
     if ( $from && ( $from eq 'Author' ) ) {
         $from = $user->email;
     }
-    my %head = ( To => $email, Subject => $subject );
+    my @mails = split( /,/, $email );
+    my %head = ( To => \@mails, Subject => $subject );
     if ( $from ) {
         $head{ From } = $from;
     }
