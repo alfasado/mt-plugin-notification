@@ -17,7 +17,7 @@ config_settings:
         default: {{classname}}_notification_email
     NotificationEmailFrom:
         default: Author # OR Email Address OR Empty(use EmailAddressMain)
-    NotificationAtStatusCanged:
+    NotificationAtStatusChanged:
         default: 1
     NotificationEmailDelimiter:
         default: Comma # OR EOL

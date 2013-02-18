@@ -39,7 +39,7 @@ sub _post_save_object {
     if (! grep( /^$class$/, @objects ) ) {
         return 1;
     }
-    if ( $app->config( 'NotificationAtStatusCanged' ) ) {
+    if ( $app->config( 'NotificationAtStatusChanged' ) ) {
         if ( defined $original ) {
             if ( $original->status == $obj->status ) {
                 return 1;
