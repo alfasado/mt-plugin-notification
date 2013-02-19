@@ -1,7 +1,7 @@
 name: Notification
 id  : Notification
 key:  notification
-version: 0.21
+version: 0.22
 author_link: http://alfasado.net/
 author_name: Alfasado Inc.
 l10n_class: Notification::L10N
@@ -12,9 +12,9 @@ config_settings:
     NotificationObjectClasses:
         default: entry,page
     NotificationBodyBasename:
-        default: {{classname}}_notification_body
+        default: '{{classname}}_notification_body'
     NotificationEmailBasename:
-        default: {{classname}}_notification_email
+        default: '{{classname}}_notification_email'
     NotificationEmailFrom:
         default: Author # OR Email Address OR Empty(use EmailAddressMain)
     NotificationAtStatusChanged:
@@ -25,9 +25,9 @@ config_settings:
         default: 0
 settings:
     notification_mail_subject:
-        Default: Notification - <mt:var name="class_label"> '<mt:var name="object_title">' is published.
+        default: Notification - <mt:var name="class_label"> '<mt:var name="object_title">' is published.
     notification_mail_body:
-        Default: <mt:var name="body">
+        default: <mt:var name="body">
 config_template: config.tmpl
 
 # TODO::save_filter
