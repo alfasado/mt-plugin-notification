@@ -25,9 +25,9 @@ config_settings:
         default: 0
 settings:
     notification_mail_subject:
-        Default: Notification - <mt:var name="class_label"> '<mt:var name="object_title">' is published.
+        default: Notification - <mt:var name="class_label"> '<mt:var name="object_title">' is published.
     notification_mail_body:
-        Default: <mt:var name="body">
+        default: <mt:var name="body">
 config_template: config.tmpl
 
 # TODO::save_filter
