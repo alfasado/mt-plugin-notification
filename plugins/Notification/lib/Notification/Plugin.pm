@@ -14,6 +14,8 @@ sub _init_app {
                 MT->add_callback( 'scheduled_post_published', 9, $plugin, \&_post_save_object );
                 # PowerRevision
                 MT->add_callback( 'cms_post_recover_from_revision.' . $obj, 9, $plugin, \&_post_save_object );
+                # EntryWorkflow
+                MT->add_callback( 'cms_workflow_published.' . $obj, 9, $plugin, \&_post_save_object );
             } elsif ( ( $datasource eq 'customobject' ) || ( $datasource eq 'co' ) ||
                 ( $datasource eq 'campaign' ) ) {
                 # CustomObject.pack / Campaign
