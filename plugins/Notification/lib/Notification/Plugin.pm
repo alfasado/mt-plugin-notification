@@ -10,6 +10,10 @@ sub _init_app {
             MT->add_callback( 'cms_post_save.' . $obj, 9, $plugin, \&_post_save_object );
             my $model = MT->model( $obj );
             my $datasource = $model->datasource;
+            my $r_key = 'Notification:' . $datasource;
+            if ( MT->request( $r_key ) ) {
+                return 1;
+            }
             if ( $datasource eq 'entry' ) {
                 MT->add_callback( 'scheduled_post_published', 9, $plugin, \&_post_save_object );
                 # PowerRevision
@@ -21,6 +25,7 @@ sub _init_app {
                 # CustomObject.pack / Campaign
                 MT->add_callback( 'post_publish.' . $obj , 9, $plugin, \&_post_save_object );
             }
+            MT->request( $r_key, 1 );
         }
     }
     $app;
