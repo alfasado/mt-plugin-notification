@@ -10,6 +10,10 @@ sub _init_app {
             MT->add_callback( 'cms_post_save.' . $obj, 9, $plugin, \&_post_save_object );
             my $model = MT->model( $obj );
             my $datasource = $model->datasource;
+            my $r_key = 'Notification:' . $datasource;
+            if ( MT->request( $r_key ) ) {
+                return 1;
+            }
             if ( $datasource eq 'entry' ) {
                 MT->add_callback( 'scheduled_post_published', 9, $plugin, \&_post_save_object );
                 # PowerRevision
@@ -21,6 +25,7 @@ sub _init_app {
                 # CustomObject.pack / Campaign
                 MT->add_callback( 'post_publish.' . $obj , 9, $plugin, \&_post_save_object );
             }
+            MT->request( $r_key, 1 );
         }
     }
     $app;
@@ -103,24 +108,23 @@ sub _post_save_object {
     for my $col ( @$columns ) {
         $param->{ $col } = $obj->$col;
     }
-    my $cgi = MT->config( 'CGIPath' );
+    my $admin_cgi = MT->config( 'AdminCGIPath' );
     my $admin_script = MT->config( 'AdminScript' );
-    my $query_str = $app->uri_params( mode => 'view',
-                    args => { _type => $class,
-                              blog_id => $blog->id,
-                              id => $obj->id } );
-    $param->{ script_uri } = $cgi;
-    $param->{ edit_screen } = $cgi . $admin_script . $query_str;
+    $param->{ script_uri } = $admin_cgi;
+    $param->{ edit_screen } = $admin_cgi . $admin_script;
+    my $query_str;
+    if ( ( ref $app ) =~ /^MT::App/ ) {
+        $query_str = $app->uri_params( mode => 'view',
+                     args => { _type => $class,
+                               blog_id => $blog->id,
+                               id => $obj->id } );
+        $param->{ edit_screen } = $admin_cgi . $admin_script . $query_str;
+    }
     my $subject = $plugin->get_config_value( 'notification_mail_subject' );
     $body = $plugin->get_config_value( 'notification_mail_body' );
-    $subject = "<__trans_section component='Notification'>${subject}</__trans_section>";
-    $body = "<__trans_section component='Notification'>${body}</__trans_section>";
-    my $tmpl = MT->model( 'template' )->new;
-    $tmpl->text( $subject );
-    $subject = $app->build_page( $tmpl, $param );
-    $tmpl = MT->model( 'template' )->new;
-    $tmpl->text( $body );
-    $body = $app->build_page( $tmpl, $param );
+    my %args = ( blog => $blog );
+    $subject = _build_tmpl( $app, $subject, \%args, $param );
+    $body = _build_tmpl( $app, $body, \%args, $param );
     require MT::Mail;
     my $from = $app->config( 'NotificationEmailFrom' );
     if ( $from && ( $from eq 'Author' ) ) {
@@ -133,6 +137,32 @@ sub _post_save_object {
     }
     MT::Mail->send( \%head, $body ) or die MT::Mail->errstr;
     return 1;
+}
+
+sub _build_tmpl {
+    my ( $app, $tmpl, $args, $params ) = @_;
+    require MT::Template;
+    require MT::Builder;
+    require MT::Template::Context;
+
+    my $ctx = MT::Template::Context->new;
+    my $build = MT::Builder->new;
+
+    for my $key ( keys %$params ) {
+        $ctx->{ __stash }->{ vars }->{ $key } = $params->{ $key };
+    }
+    my $blog = $args->{ blog };
+    my $author = $args->{ author };
+    $ctx->stash( 'blog', $blog ) if $blog;
+    $ctx->stash( 'author', $author ) if $author;
+
+    my $tokens = $build->compile( $ctx, $tmpl )
+        or return $app->error( $app->translate(
+            "Parse error: [_1]", $build->errstr ) );
+    defined( my $html = $build->build( $ctx, $tokens ) )
+        or return $app->error( $app->translate(
+            "Build error: [_1]", $build->errstr ) );
+    return $html;
 }
 
 1;
